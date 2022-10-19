@@ -1,0 +1,62 @@
+# GET http://localhost:4040/books
+
+
+# GET http://localhost:4040/books/2
+
+# GET http://localhost:4040/books/title
+
+
+# GET http://localhost:4040/books
+#     ?_sort=id
+#     &_order=desc
+
+
+# GET http://localhost:4040/books/7
+
+# POST http://localhost:4040/books
+#     content-type: application/json
+
+#     {
+#         "title": "Новая Два солнца",
+#         "author": "Леонид Кудрявцев",
+#         "genres": ["фантастика"],
+#         "rating": 6.36
+#     }
+
+POST http://localhost:4040/books
+    content-type: application/json
+
+{"title":"Новая Два солнца","author":"Леонид Кудрявцев","genres":["фантастика"],"rating":6.36}
+
+###
+
+# GETALL
+GET http://localhost:4040/books
+    ?_sort=id
+    &_order=desc
+
+###
+# update
+# PATCH - замена свойств
+# PUT - полностью заменяет (быстрее для БД)
+PATCH http://localhost:4040/books/40
+    content-type: application/json
+ 
+    {
+        "rating": 95
+    }
+###
+# GET
+    GET http://localhost:4040/books/40
+
+###
+
+GET http://localhost:4040/books/19
+
+# DELETE
+###
+DELETE http://localhost:4040/books/40
+
+
+###
+GET https://pixabay.com/api/?key=30695501-7cf0afb8f69a77a083ed747e6&q=yellow+flowers&image_type=photo&orientation=horizontal&safesearch=true&per_page=4
