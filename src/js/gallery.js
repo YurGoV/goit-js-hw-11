@@ -35,7 +35,7 @@ function getPictures(event) {
   event.preventDefault();
   // console.log('ddd');
   console.log(event.currentTarget.elements.searchQuery.value);
-  querryString = event.currentTarget.elements.searchQuery.value;
+  const querryString = event.currentTarget.elements.searchQuery.value;
 
   const querry = axios.get('https://pixabay.com/api/', {
       params: {
@@ -69,7 +69,7 @@ function getPictures(event) {
 function onGetValidData(dataArray) {
   console.log(dataArray);
   console.log(dataArray.data.totalHits);
-  ttt = dataArray.data.hits;
+  // ttt = dataArray.data.hits;
   const stringToDisplay = dataArray.data.hits.map(
     ({webformatURL, largeImageURL, tags, likes, views, comments, downloads}) => 
   `<div class="photo-card">
