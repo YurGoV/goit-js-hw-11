@@ -9,7 +9,13 @@
   /* display: flex; */
   padding-top: 15px;
   padding-bottom: 30px;
-  margin-left: 300px;
+  margin-left: 25%;
   /* margin-left: auto;
   margin-right: auto; */
+}
+
+.load-more {
+  margin-left: 25%;
+  /* display: inline-block;
+  display: none; */
 }
