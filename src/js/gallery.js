@@ -224,7 +224,7 @@ function loadMoreButtonVisibility(isHaveToVisible) {
 
 const lBox = {  
   init(){
-    lightbox = new SimpleLightbox('.photo-card a', {// ініціалізуємо SimpleLightbox
+    let lightbox = new SimpleLightbox('.photo-card a', {// ініціалізуємо SimpleLightbox
     // captions: true,//by default
     captionsData: 'alt',
     captionDelay: 250,
