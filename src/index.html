@@ -10,15 +10,17 @@
     <link rel="stylesheet" href="css/gallery.css" />
   </head>
   <body>
-    <form class="search-form" id="search-form">
-      <input
-        type="text"
-        name="searchQuery"
-        autocomplete="off"
-        placeholder="Search images..."
-      />
-      <button type="submit">Search</button>
-    </form>
+    <section class=search-section>
+      <form class="search-form" id="search-form">
+        <input
+          type="text"
+          name="searchQuery"
+          autocomplete="off"
+          placeholder="Search images..."
+        />
+        <button type="submit">Search</button>
+      </form>
+    </section>
 
     <!-- <button type="button" class="load-more">Load more</button> -->
 
@@ -26,8 +28,10 @@
     <div class="gallery">
 
     </div>
-
+    <section class=load-more-section>
       <button type="button" class="load-more">Load more</button>
+    </section>
+      
 
       <script src="js/gallery.js" type="module"></script>
   </body>

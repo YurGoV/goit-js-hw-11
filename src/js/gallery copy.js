@@ -12,6 +12,9 @@ const ref = {
   loadMoreButton: document.querySelector('button.load-more'),
 }
 
+// console.log(ref.searchButton);
+// console.log(ref.gallerySet);
+// console.log(ref.loadMoreButton);
 
 const onClick = {
   image(event) {
@@ -29,18 +32,39 @@ const onClick = {
 
 const on = {
   searchButton: ref.searchButton.addEventListener('submit', onSearchButtonClick),
+  // image: ref.gallerySet.addEventListener('click', onImageClick),
   image: ref.gallerySet.addEventListener('click', onClick.image),
+  // loadMoreButton: ref.loadMoreButton.addEventListener('click', onloadMoreButtonClick),
   loadMoreButton: ref.loadMoreButton.addEventListener('click', onClick.loadMoreButton),
 }
 
+// const onSearchButton = ref.searchButton.addEventListener('submit', onSearchButtonClick);
+// const onImage = ref.gallerySet.addEventListener('click', onImageClick);
+// const onloadMoreButton = ref.loadMoreButton.addEventListener('click', onloadMoreButtonClick)
+
+// function onImageClick(event) {
+//   event.preventDefault();
+//   console.log(event.target.alt);
+// }
 
 
+
+// function onloadMoreButtonClick(event) {
+//   console.log('search');
+//   findImagesService.setPage();
+//   findImagesService.find();
+// }
+
+
+
+// ========
 function onSearchButtonClick(event) {
   event.preventDefault();
   
   console.log(event.currentTarget.elements.searchQuery.value);
   const querryString = event.currentTarget.elements.searchQuery.value;
 
+    // findImagesService.find(querryString);
   findImagesService.querryString = querryString;
   findImagesService.find();
 };
@@ -48,7 +72,6 @@ function onSearchButtonClick(event) {
 
 function onGetValidData(dataArray, currentPage, perPage) {
   console.log(dataArray.data.total);
-  console.log(dataArray.data);
   console.log(`total data ${dataArray.data.total}`);
   const totalHits = dataArray.data.totalHits;
   console.log(`currentPage`);
@@ -64,38 +87,9 @@ function onGetValidData(dataArray, currentPage, perPage) {
     return Notify.failure(`Sorry, there are no images matching your search querry. Please try again`);
   };
 
-  ref.gallerySet.insertAdjacentHTML('beforeend', displayData.stringToDisplay(dataArray));
+ 
 
-
-  if (currentPage === 1) {
-    Notify.success(`Hooray! We found ${totalHits} images.`);
-
-      lBox.init()
-      console.log('aaaaa');
-    // console.log(lightbox);
-  } else {
-    console.log('bbbbb');
-    // console.log(lightbox);
-    lBox.refresh();
-    smoothScroll();
-  }
-
-  if ( totalPages !== currentPage) {
-    return loadMoreButtonVisibility(true);
-    } 
-  loadMoreButtonVisibility(false);
-  Notify.failure("We're sorry, but you've reached the end of search results.");
-    
-}
-
-function clearGallery() {
-  ref.gallerySet.innerHTML = '';
-}
-
-const displayData = {
-
-  stringToDisplay(dataArray) {
-   return dataArray.data.hits.map(
+  const stringToDisplay = dataArray.data.hits.map(
     ({webformatURL, largeImageURL, tags, likes, views, comments, downloads}) => 
       `<div class="photo-card">
         <a href="${largeImageURL}" class="gallery__item">
@@ -126,9 +120,40 @@ const displayData = {
       `
   )
   .join('');
-  },
+
+  ref.gallerySet.insertAdjacentHTML('beforeend', stringToDisplay);
+  // ref.gallerySet.innerHTML = stringToDisplay;
+
+
+  if (currentPage === 1) {
+    Notify.success(`Hooray! We found ${totalHits} images.`);
+
+      lBox.init()
+      console.log('aaaaa');
+    // console.log(lightbox);
+  } else {
+    console.log('bbbbb');
+    // console.log(lightbox);
+    lBox.refresh()
+  }
+
   
+  smoothScroll();
+
+
+  if ( totalPages !== currentPage) {
+    return loadMoreButtonVisibility(true);
+    } 
+  loadMoreButtonVisibility(false);
+  Notify.failure("We're sorry, but you've reached the end of search results.");
+    
 }
+
+function clearGallery() {
+  ref.gallerySet.innerHTML = '';
+}
+
+
 
 // ========
 
@@ -186,6 +211,8 @@ const findImagesService = {
     console.log(`searchin QS: ${this.querryString}`);
     console.log(`previous QS: ${this.previousSearch}`);
 
+    // this.querryString = querryString;
+    // this.saveQuerryString()
     this.previousSearch = this.querryString;
     this.prevoiusPage = this.page;
 
@@ -198,10 +225,16 @@ const findImagesService = {
 }
 
 
+
+
+
+
+
+
 function loadMoreButtonVisibility(isHaveToVisible) {
   if (isHaveToVisible) {
     return ref.loadMoreButton.style.display = 'inline-block';
-  };
+  }
 
   ref.loadMoreButton.style.display = 'none';
 }
