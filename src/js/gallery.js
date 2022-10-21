@@ -222,9 +222,12 @@ function loadMoreButtonVisibility(isHaveToVisible) {
 
 }
 
-const lBox = {  
+const lBox = {
+
+  lightbox: NaN,
+
   init(){
-    lightbox = new SimpleLightbox('.photo-card a', {// ініціалізуємо SimpleLightbox
+    this.lightbox = new SimpleLightbox('.photo-card a', {// ініціалізуємо SimpleLightbox
     // captions: true,//by default
     captionsData: 'alt',
     captionDelay: 250,
@@ -233,7 +236,7 @@ const lBox = {
   },
 
   refresh() {
-    lightbox.refresh();
+    this.lightbox.refresh();
   }
 
 }
