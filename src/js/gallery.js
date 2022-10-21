@@ -199,17 +199,12 @@ function onGetValidData(dataArray, currentPage, perPage) {
     lBox.refresh()
   }
 
-
-
   if ( totalPages !== currentPage) {
-    return loadMoreButtonVisibility(true);
-  };
-
-  loadMoreButtonVisibility(false);
-  Notify.failure("We're sorry, but you've reached the end of search results.");
-
-
-
+    loadMoreButtonVisibility(true);
+    } else {
+    loadMoreButtonVisibility(false);
+    Notify.failure("We're sorry, but you've reached the end of search results.");
+    }
 }
 
 function clearGallery() {
@@ -218,6 +213,7 @@ function clearGallery() {
 
 function loadMoreButtonVisibility(isHaveToVisible) {
   if (isHaveToVisible) {
+
     return ref.loadMoreButton.style.display = 'inline-block';
   }
 
