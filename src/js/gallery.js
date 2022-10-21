@@ -2,6 +2,12 @@
 // const axios = require('axios');
 const axios = require('axios').default;
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
+
+
+
+
 Notify.init({
   width: notifySetup().width,
   position: notifySetup().position,
@@ -14,34 +20,28 @@ Notify.init({
 const ref = {
   searchButton: document.querySelector('.search-form'),
   gallerySet: document.querySelector('.gallery'),
-  nextPageButton: document.querySelector('button.load-more'),
+  loadMoreButton: document.querySelector('button.load-more'),
 }
 
 console.log(ref.searchButton);
 console.log(ref.gallerySet);
-console.log(ref.nextPageButton);
+console.log(ref.loadMoreButton);
 
 const onSearchButton = ref.searchButton.addEventListener('submit', onSearchButtonClick);
 const onImage = ref.gallerySet.addEventListener('click', onImageClick);
-const onNextPageButton = ref.nextPageButton.addEventListener('click', onNextPageButtonClick)
+const onloadMoreButton = ref.loadMoreButton.addEventListener('click', onloadMoreButtonClick)
 
 function onImageClick(event) {
+  event.preventDefault();
   console.log(event.target.alt);
 }
 
-function onNextPageButtonClick(event) {
+function onloadMoreButtonClick(event) {
   console.log('search');
   fingImagesService.setPage();
   fingImagesService.find();
 }
 
-// ===
-// const picturesSearch = {
-
-//   onSearch
-
-
-// }
 
 const fingImagesService = {
 
@@ -49,28 +49,33 @@ const fingImagesService = {
   querryString: '',
   previousSearch: '',
   prevoiusPage: NaN,
+  perPage: 40,
 
 
   find () {
 
-    
-  if (this.querryString === '') {
-    return Notify.failure(`please input what you want to search!`);
-  }
+    if (this.querryString === '') {
 
-  console.log(this.querryString);
+      clearGallery();
+      loadMoreButtonVisibility(false);
+      return Notify.failure(`please input what you want to search!`);
 
-  if (this.previousSearch !== '' && this.previousSearch !== this.querryString) {
-    console.log('!==');
-    this.page = 1;
-    clearGallery();
-  }
+    }
 
-  if (this.prevoiusPage === this.page && this.previousSearch === this.querryString) {
-    return Notify.success(`To show more press "Load more" downside button or change search querryy please`);
-  }
-    
-  // this.querryString = ''
+    console.log(this.querryString);
+
+    if (this.prevoiusPage === this.page && this.previousSearch === this.querryString) {
+      return Notify.success(`To show more press "Load more" downside button or change search querryy please`);
+    }
+
+    if (this.previousSearch !== '' && this.previousSearch !== this.querryString) {
+      console.log('!==');
+      this.page = 1;
+      clearGallery();
+    }
+
+    const currentPage = this.page;
+    const perPage = this.perPage;
 
     const querry = axios.get('https://pixabay.com/api/', {
       params: {
@@ -80,13 +85,12 @@ const fingImagesService = {
         orientation: 'horizontal',
         safesearch: true,
         page: this.page,
-        per_page: 40,
+        per_page: this.perPage,
       }
     })
     .then(function (response) {
-      onGetValidData(response)
+      onGetValidData(response, currentPage, perPage)
     })
-
     .then(function () {
       // always executed
     });
@@ -107,14 +111,7 @@ const fingImagesService = {
     this.page += 1;
     console.log(this.page);
   },
-
 }
-
-
-
-// console.log(typeof querry);
-
-
 
 
 function onSearchButtonClick(event) {
@@ -133,57 +130,119 @@ function onSearchButtonClick(event) {
 
 
 
-function onGetValidData(dataArray) {
-  // console.log(dataArray);
+function onGetValidData(dataArray, currentPage, perPage) {
+  console.log(dataArray.data.total);
+  console.log(`total data ${dataArray.data.total}`);
   const totalHits = dataArray.data.totalHits;
+  console.log(`currentPage`);
+  console.log(currentPage);
+  console.log(`perPage`);
+  console.log(perPage);
+  const totalPages = Math.ceil(totalHits / perPage);
+  console.log(`totalPages`);
+  console.log(totalPages);
 
   if (totalHits === 0) {
     console.log(totalHits);
     return Notify.failure(`Sorry, there are no images matching your search querry. Please try again`);
   };
 
-  Notify.success(`Horray! We found ${totalHits} images.`);
+ 
   // console.log(dataArray);
   // ttt = dataArray.data.hits;
 
   const stringToDisplay = dataArray.data.hits.map(
     ({webformatURL, largeImageURL, tags, likes, views, comments, downloads}) => 
-  `<div class="photo-card">
-    <img class="gallery__image" 
-      src="${webformatURL}" 
-      alt="" loading="lazy" 
-      data-large-image="${largeImageURL}"/>
-    <div class="info">
-      <p class="info-item">
-        <b>Likes</b>
-        ${likes}
-      </p>
-      <p class="info-item">
-        <b>Views</b>
-        ${views}
-      </p>
-      <p class="info-item">
-        <b>Comments</b>
-        ${comments}
-      </p>
-      <p class="info-item">
-        <b>Downloads</b>
-        ${downloads}
-      </p>
-    </div>
-  </div>
-  `
+      `<div class="photo-card">
+        <a href="${largeImageURL}" class="gallery__item">
+          <img class="gallery__image" 
+            src="${webformatURL}" 
+            alt="${tags}" loading="lazy"
+            />
+        </a>
+        <div class="info">
+          <p class="info-item">
+            <b>Likes</b>
+            ${likes}
+          </p>
+          <p class="info-item">
+            <b>Views</b>
+            ${views}
+          </p>
+          <p class="info-item">
+            <b>Comments</b>
+            ${comments}
+          </p>
+          <p class="info-item">
+            <b>Downloads</b>
+            ${downloads}
+          </p>
+        </div>
+      </div>
+      `
   )
   .join('');
 
   ref.gallerySet.insertAdjacentHTML('beforeend', stringToDisplay);
   // ref.gallerySet.innerHTML = stringToDisplay;
 
+
+  if (currentPage === 1) {
+    Notify.success(`Hooray! We found ${totalHits} images.`);
+
+      lBox.init()
+
+    console.log(lightbox);
+  } else {
+    console.log('dsdsdsd');
+    console.log(lightbox);
+    lBox.refresh()
+  }
+
+
+
+  if ( totalPages !== currentPage) {
+    return loadMoreButtonVisibility(true);
+  };
+
+  loadMoreButtonVisibility(false);
+  Notify.failure("We're sorry, but you've reached the end of search results.");
+
+
+
 }
 
 function clearGallery() {
   ref.gallerySet.innerHTML = '';
 }
+
+function loadMoreButtonVisibility(isHaveToVisible) {
+  if (isHaveToVisible) {
+    return ref.loadMoreButton.style.display = 'inline-block';
+  }
+
+  ref.loadMoreButton.style.display = 'none';
+  
+
+}
+
+const lBox = {  
+  init(){
+    lightbox = new SimpleLightbox('.photo-card a', {// ініціалізуємо SimpleLightbox
+    // captions: true,//by default
+    captionsData: 'alt',
+    captionDelay: 250,
+    // captionPosition: 'bottom',//by default
+  });
+  },
+
+  refresh() {
+    lightbox.refresh();
+  }
+
+}
+
+
 
 function notifySetup() {
   if (window.innerWidth >= 1100) {
@@ -199,101 +258,4 @@ function notifySetup() {
   width: '280px',
   };
 };
-    // console.log(notifySetup().fontSize);
 
-// access to large image link:  /listener/dataset.largeImage
-
-
-// onImageClick('yellow+flowers');
-
-// async function onImageClick(request) {
-//   event.preventDefault()
-//   try {
-//     request.preventDefault()
-//     const response = await axios.get('https://pixabay.com/api/', {
-//       params: {
-//         key:'30695501-7cf0afb8f69a77a083ed747e6',
-//         q: request,
-//         image_type: 'photo',
-//         orientation: 'horizontal',
-//         safesearch: true,
-//         per_page: 40
-//       }
-//     });
-//     response.preventDefault()
-//     console.log(response.data.hits);
-//     console.log(response.data.hits);
-//   } catch (error) {
-//     console.error(error);
-//   }
-// }
-
-// onImageClick('yellow+flowers');
-
-
-
-// querry ({id, webformatURL, largeImageURL, tags, likes, views, comments, downloads}) {
-//   console.log(id);
-// }
-
-// import SimpleLightbox from "simplelightbox";
-// import "simplelightbox/dist/simple-lightbox.min.css";
-
-// const galleryCards = galleryItems.map(({description, original, preview}) => 
-//   `<a class="gallery__item" href="${original}">
-//   <img 
-//     class="gallery__image"
-//     src="${preview}"
-//     alt="${description}"
-//   />
-// </a>`)
-// .join("");
-
-
-// const refGallery = document.querySelector('.gallery')// шукаємо дів-ку
-// // console.log(refGallery);
-
-// refGallery.insertAdjacentHTML('beforeend', galleryCards)// аджастимо галерею в ДОМ
-
-// refGallery.addEventListener('click', openModal);//Додаємо слухача на gallery (галарею в цілому), та виклик SimpleLightbox
-
-
-// function openModal(event) {
-//     event.preventDefault();//не даємо відкриватися імг-шці за замовченням
-// }
-
-// let lightbox = new SimpleLightbox('.gallery a', {// ініціалізуємо SimpleLightbox
-//     // captions: true,//by default
-//     captionsData: 'alt',
-//     captionDelay: 250,
-//     // captionPosition: 'bottom',//by default
-// });
-
-
-// const searchButton = document.querySelector('.search-form');
-// const querry = searchButton.querySelector('submit', onImageClick);
-
-
-// const querry = axios.get('https://pixabay.com/api/', {
-//   params: {
-//     key:'30695501-7cf0afb8f69a77a083ed747e6',
-//     q: 'yellow+flowers',
-//     image_type: 'photo',
-//     orientation: 'horizontal',
-//     safesearch: true,
-//     per_page: 40
-//   }
-// })
-// .then(function (response) {
-//   console.log(response.data.hits);
-//   console.log(response.data.totalHits);
-// })
-// // .then(onResponse(response))
-// // .catch(function (error) {
-// //   console.log(error);
-// // })
-// .then(function () {
-//   // always executed
-// }); 
-
-// console.log(typeof querry);

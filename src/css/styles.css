@@ -16,6 +16,6 @@
 
 .load-more {
   margin-left: 25%;
-  /* display: inline-block;
-  display: none; */
+  /* display: inline-block; */
+  display: none;
 }
