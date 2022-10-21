@@ -191,20 +191,20 @@ function onGetValidData(dataArray, currentPage, perPage) {
     Notify.success(`Hooray! We found ${totalHits} images.`);
 
       lBox.init()
-
-    console.log(lightbox);
+      console.log('aaaaa');
+    // console.log(lightbox);
   } else {
-    console.log('dsdsdsd');
-    console.log(lightbox);
+    console.log('bbbbb');
+    // console.log(lightbox);
     lBox.refresh()
   }
 
   if ( totalPages !== currentPage) {
-    loadMoreButtonVisibility(true);
-    } else {
-    loadMoreButtonVisibility(false);
-    Notify.failure("We're sorry, but you've reached the end of search results.");
-    }
+    return loadMoreButtonVisibility(true);
+    } 
+  loadMoreButtonVisibility(false);
+  Notify.failure("We're sorry, but you've reached the end of search results.");
+    
 }
 
 function clearGallery() {
@@ -224,7 +224,7 @@ function loadMoreButtonVisibility(isHaveToVisible) {
 
 const lBox = {  
   init(){
-    let lightbox = new SimpleLightbox('.photo-card a', {// ініціалізуємо SimpleLightbox
+    lightbox = new SimpleLightbox('.photo-card a', {// ініціалізуємо SimpleLightbox
     // captions: true,//by default
     captionsData: 'alt',
     captionDelay: 250,
