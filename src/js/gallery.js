@@ -201,7 +201,7 @@ const findImagesService = {
         });
       return res = await onGetValidData(querry, currentPage, perPage);
       } catch (error) {
-        this.console.error(error);
+        console.log(error.message);
       }
     };
     await querry();
