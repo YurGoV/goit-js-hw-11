@@ -1,25 +1,17 @@
 
 // const axios = require('axios');
 const axios = require('axios').default;
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
-
-Notify.init({
-  width: 400,
-  position:  'right-top',
-  distance: '10px',
-  opacity: 0.7,
-  clickToClose: true,
-  fontSize:'14px',
-});
 
 
 const ref = {
   searchButton: document.querySelector('.search-form'),
   gallerySet: document.querySelector('.gallery'),
   loadMoreButton: document.querySelector('button.load-more'),
-};
+}
+
 
 const onClick = {
   image(event) {
@@ -31,62 +23,79 @@ const onClick = {
     console.log('search');
     findImagesService.setPage();
     findImagesService.find();    
-  },
+  }
 
-  async onSearchButtonClick(event) {
-    event.preventDefault();
-    
-    console.log(event.currentTarget.elements.searchQuery.value);
-    const querryString = await event.currentTarget.elements.searchQuery.value;
-  
-    findImagesService.querryString = querryString;
-    await findImagesService.find();
-  },
-};
+}
 
 const on = {
-  searchButton: ref.searchButton.addEventListener('submit', onClick.onSearchButtonClick),
+  searchButton: ref.searchButton.addEventListener('submit', onSearchButtonClick),
   image: ref.gallerySet.addEventListener('click', onClick.image),
   loadMoreButton: ref.loadMoreButton.addEventListener('click', onClick.loadMoreButton),
+}
+
+
+
+function onSearchButtonClick(event) {
+  event.preventDefault();
+  
+  console.log(event.currentTarget.elements.searchQuery.value);
+  const querryString = event.currentTarget.elements.searchQuery.value;
+
+  findImagesService.querryString = querryString;
+  findImagesService.find();
 };
 
 
-async function onGetValidData(dataArray, currentPage, perPage) {
+function onGetValidData(dataArray, currentPage, perPage) {
+  console.log(dataArray.data.total);
+  console.log(dataArray.data);
+  console.log(`total data ${dataArray.data.total}`);
   const totalHits = dataArray.data.totalHits;
+  console.log(`currentPage`);
+  console.log(currentPage);
+  console.log(`perPage`);
+  console.log(perPage);
   const totalPages = Math.ceil(totalHits / perPage);
+  console.log(`totalPages`);
+  console.log(totalPages);
 
   if (totalHits === 0) {
     console.log(totalHits);
     return Notify.failure(`Sorry, there are no images matching your search querry. Please try again`);
   };
 
-  const str = await display.stringToDisplay(dataArray);
+  ref.gallerySet.insertAdjacentHTML('beforeend', displayData.stringToDisplay(dataArray));
 
-  ref.gallerySet.insertAdjacentHTML('beforeend', await display.stringToDisplay(dataArray));
 
   if (currentPage === 1) {
     Notify.success(`Hooray! We found ${totalHits} images.`);
 
-      sLightBox.init()
+      lBox.init()
       console.log('aaaaa');
+    // console.log(lightbox);
   } else {
     console.log('bbbbb');
-    sLightBox.refresh();
-    display.smoothScroll();
+    // console.log(lightbox);
+    lBox.refresh();
+    smoothScroll();
   }
 
   if ( totalPages !== currentPage) {
-    return display.loadMoreButtonVisibility(true);
+    return loadMoreButtonVisibility(true);
     } 
-  display.loadMoreButtonVisibility(false);
+  loadMoreButtonVisibility(false);
   Notify.failure("We're sorry, but you've reached the end of search results.");
-};
+    
+}
 
-const display = {
+function clearGallery() {
+  ref.gallerySet.innerHTML = '';
+}
 
-  async stringToDisplay(dataArray) {
-    try {
-   const arrayData = await dataArray.data.hits.map(
+const displayData = {
+
+  stringToDisplay(dataArray) {
+   return dataArray.data.hits.map(
     ({webformatURL, largeImageURL, tags, likes, views, comments, downloads}) => 
       `<div class="photo-card">
         <a href="${largeImageURL}" class="gallery__item">
@@ -115,42 +124,13 @@ const display = {
         </div>
       </div>
       `
-  );
-  const stringData = await arrayData.join('');
-  return stringData;
-   } catch (error) {
-    console.log(error.message);
-   }
+  )
+  .join('');
   },
-
-  smoothScroll() {
-    const { height: cardHeight } = document
-    .querySelector(".gallery")
-    .firstElementChild.getBoundingClientRect();
   
-    console.log(`doc.h ${cardHeight}`);
-    console.log(window.innerHeight);
-    console.log(Math.floor(window.innerHeight / cardHeight));
-  
-    window.scrollBy({
-    // top: cardHeight * 2,
-    top: ((Math.floor(window.innerHeight / cardHeight) - 1) * cardHeight),
-    behavior: "smooth",
-    });  
-  },
+}
 
-  clearGallery() {
-    return ref.gallerySet.innerHTML = '';
-  },
-
-  loadMoreButtonVisibility(isHaveToVisible) {
-    if (isHaveToVisible) {
-      return ref.loadMoreButton.style.display = 'inline-block';
-    };
-    ref.loadMoreButton.style.display = 'none';
-  }
-};
-
+// ========
 
 
 const findImagesService = {
@@ -161,11 +141,10 @@ const findImagesService = {
   prevoiusPage: NaN,
   perPage: 40,
 
-  async find () {
+  find () {
     if (this.querryString === '') {
-      display.clearGallery();
-      display.loadMoreButtonVisibility(false);
-      this.previousSearch = '';
+      clearGallery();
+      loadMoreButtonVisibility(false);
       return Notify.failure(`please input what you want to search!`);
     }
 
@@ -178,34 +157,29 @@ const findImagesService = {
     if (this.previousSearch !== '' && this.previousSearch !== this.querryString) {
       console.log('!==');
       this.page = 1;
-      display.clearGallery();
+      clearGallery();
     }
 
     const currentPage = this.page;
-    console.log(`111111 ${currentPage}`);
     const perPage = this.perPage;
-    const querryString = this.querryString
 
-    async function querry() {
-      try {
-      const querry = await axios.get('https://pixabay.com/api/', {
-       params: {
+    const querry = axios.get('https://pixabay.com/api/', {
+      params: {
         key:'30695501-7cf0afb8f69a77a083ed747e6',
-        q: querryString,
+        q: this.querryString,
         image_type: 'photo',
         orientation: 'horizontal',
         safesearch: true,
-        page: currentPage,
-        per_page: perPage,
-        }
-        });
-      return res = await onGetValidData(querry, currentPage, perPage);
-      } catch (error) {
-        this.console.error(error);
+        page: this.page,
+        per_page: this.perPage,
       }
-    };
-    await querry();
-
+    })
+    .then(function (response) {
+      onGetValidData(response, currentPage, perPage)
+    })
+    .then(function () {
+      // always executed
+    });
 
     console.log(`displaying page: ${this.page}`);
     console.log(`displaying prevPage: ${this.prevoiusPage}`);
@@ -224,14 +198,26 @@ const findImagesService = {
 }
 
 
-const sLightBox = {
+function loadMoreButtonVisibility(isHaveToVisible) {
+  if (isHaveToVisible) {
+    return ref.loadMoreButton.style.display = 'inline-block';
+  };
+
+  ref.loadMoreButton.style.display = 'none';
+}
+
+const lBox = {
+
+  lightbox: NaN,
 
   init(){
-    this.lightbox = new SimpleLightbox('.photo-card a', {
+    this.lightbox = new SimpleLightbox('.photo-card a', {// ініціалізуємо SimpleLightbox
+    // captions: true,//by default
     captionsData: 'alt',
     captionDelay: 250,
     close: false,
     showCounter: false,
+    // captionPosition: 'bottom',//by default
   });
   },
 
@@ -240,4 +226,47 @@ const sLightBox = {
   }
 
 }
+
+function smoothScroll() {
+  const { height: cardHeight } = document
+  .querySelector(".gallery")
+  .firstElementChild.getBoundingClientRect();
+
+  console.log(`doc.h ${cardHeight}`);
+  console.log(window.innerHeight);
+  console.log(Math.floor(window.innerHeight / cardHeight));
+
+  window.scrollBy({
+  // top: cardHeight * 2,
+  top: ((Math.floor(window.innerHeight / cardHeight) - 1) * cardHeight),
+  behavior: "smooth",
+  });
+
+  
+}
+
+
+Notify.init({
+  width: notifySetup().width,
+  position: notifySetup().position,
+  distance: '10px',
+  opacity: 0.7,
+  clickToClose: true,
+  fontSize: notifySetup().fontSize,
+});
+
+function notifySetup() {
+  if (window.innerWidth >= 1100) {
+      return {
+      position: 'center-top',
+      fontSize: '18px',
+      width: '400px',
+      }
+  };
+  return {
+  fontSize: '14px',
+  position: 'right-top',
+  width: '280px',
+  };
+};
 
