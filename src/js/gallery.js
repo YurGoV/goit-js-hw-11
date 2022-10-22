@@ -189,7 +189,7 @@ const findImagesService = {
         per_page: perPage,
         }
         });
-      return res = await onGetValidData(querry, currentPage, perPage);
+      return await onGetValidData(querry, currentPage, perPage);
       } catch (error) {
         console.log(error.message);
       }
