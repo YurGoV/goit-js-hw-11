@@ -24,19 +24,17 @@ const ref = {
 const onClick = {
   image(event) {
     event.preventDefault();
-    console.log(event.target.alt);
+    // console.log(event.target.alt);
   },
   
   loadMoreButton (event) {
-    console.log('search');
     findImagesService.setPage();
     findImagesService.find();    
   },
 
   async onSearchButtonClick(event) {
     event.preventDefault();
-    
-    console.log(event.currentTarget.elements.searchQuery.value);
+
     const querryString = await event.currentTarget.elements.searchQuery.value;
   
     findImagesService.querryString = querryString;
@@ -56,7 +54,6 @@ async function onGetValidData(dataArray, currentPage, perPage) {
   const totalPages = Math.ceil(totalHits / perPage);
 
   if (totalHits === 0) {
-    console.log(totalHits);
     return Notify.failure(`Sorry, there are no images matching your search querry. Please try again`);
   };
 
@@ -68,9 +65,7 @@ async function onGetValidData(dataArray, currentPage, perPage) {
     Notify.success(`Hooray! We found ${totalHits} images.`);
 
       sLightBox.init()
-      console.log('aaaaa');
   } else {
-    console.log('bbbbb');
     sLightBox.refresh();
     display.smoothScroll();
   }
@@ -79,7 +74,10 @@ async function onGetValidData(dataArray, currentPage, perPage) {
     return display.loadMoreButtonVisibility(true);
     } 
   display.loadMoreButtonVisibility(false);
+
+  if (currentPage !== 1) {
   Notify.failure("We're sorry, but you've reached the end of search results.");
+  }
 };
 
 const display = {
@@ -127,11 +125,7 @@ const display = {
     const { height: cardHeight } = document
     .querySelector(".gallery")
     .firstElementChild.getBoundingClientRect();
-  
-    console.log(`doc.h ${cardHeight}`);
-    console.log(window.innerHeight);
-    console.log(Math.floor(window.innerHeight / cardHeight));
-  
+
     window.scrollBy({
     // top: cardHeight * 2,
     top: ((Math.floor(window.innerHeight / cardHeight) - 1) * cardHeight),
@@ -169,20 +163,16 @@ const findImagesService = {
       return Notify.failure(`please input what you want to search!`);
     }
 
-    console.log(this.querryString);
-
     if (this.prevoiusPage === this.page && this.previousSearch === this.querryString) {
-      return Notify.success(`To show more press "Load more" downside button or change search querryy please`);
+      return Notify.success(`To show more click "Load more" downside button or change search querryy please`);
     }
 
     if (this.previousSearch !== '' && this.previousSearch !== this.querryString) {
-      console.log('!==');
       this.page = 1;
       display.clearGallery();
     }
 
     const currentPage = this.page;
-    console.log(`111111 ${currentPage}`);
     const perPage = this.perPage;
     const querryString = this.querryString
 
@@ -206,12 +196,6 @@ const findImagesService = {
     };
     await querry();
 
-
-    console.log(`displaying page: ${this.page}`);
-    console.log(`displaying prevPage: ${this.prevoiusPage}`);
-    console.log(`searchin QS: ${this.querryString}`);
-    console.log(`previous QS: ${this.previousSearch}`);
-
     this.previousSearch = this.querryString;
     this.prevoiusPage = this.page;
 
@@ -219,7 +203,6 @@ const findImagesService = {
 
   setPage () {
     this.page += 1;
-    console.log(this.page);
   },
 }
 
