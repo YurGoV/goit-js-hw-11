@@ -5,6 +5,14 @@ import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
+if ('loading' in HTMLImageElement.prototype) {// https://youtu.be/kxwN7eXBNDQ?t=1h9m35s
+  console.log('Браузер поддерживает lazyload');
+  // addSrcAttrToLazyImages();
+} else {
+  console.log('Браузер НЕ поддерживает lazyload');
+  // addLazySizesScript();
+}
+
 Notify.init({
   width: 400,
   position:  'right-top',
