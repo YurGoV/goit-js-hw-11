@@ -8,6 +8,10 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { LazyLoadConfig } from "./lazyloadconfig-class.js";
 const lazyLoadConfig = new LazyLoadConfig;
 
+const supportsLazyLoad = ('loading' in document.createElement('img'));
+console.log("🚀 ~ supportsLazyLoad", supportsLazyLoad)
+
+
 Notify.init({
   width: 400,
   position:  'right-top',
