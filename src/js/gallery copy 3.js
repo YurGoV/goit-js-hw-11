@@ -5,8 +5,22 @@ import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
-import { LazyLoadConfig } from "./lazyloadconfig-class.js";
-const lazyLoadConfig = new LazyLoadConfig;
+
+
+// ========= 
+
+import 'lazysizes';// піздніше додати до умови непідтримки
+
+if ('loading' in HTMLImageElement.prototype) {// https://youtu.be/kxwN7eXBNDQ?t=1h9m35s
+  console.log('Браузер поддерживает lazyload');
+  // addSrcAttrToLazyImages();
+} else {
+  console.log('Браузер НЕ поддерживает lazyload');
+  // addLazySizesScript();
+};
+
+
+
 
 Notify.init({
   width: 400,
@@ -17,11 +31,11 @@ Notify.init({
   fontSize:'14px',
 });
 
+
 const ref = {
   searchButton: document.querySelector('.search-form'),
   gallerySet: document.querySelector('.gallery'),
   loadMoreButton: document.querySelector('button.load-more'),
-  searchSection: document.querySelector('.search-section'),
 };
 
 const onClick = {
@@ -60,9 +74,12 @@ async function onGetValidData(dataArray, currentPage, perPage) {
     return Notify.failure(`Sorry, there are no images matching your search querry. Please try again`);
   };
 
-  // const str = await display.stringToDisplay(dataArray);
+  const str = await display.stringToDisplay(dataArray);
+  // console.log(typeof str);
 
   ref.gallerySet.insertAdjacentHTML('beforeend', await display.stringToDisplay(dataArray));
+
+  // ref.gallerySet.append(...str);//append
 
   if (currentPage === 1) {
     Notify.success(`Hooray! We found ${totalHits} images.`);
@@ -83,24 +100,29 @@ async function onGetValidData(dataArray, currentPage, perPage) {
   }
 };
 
+loadConfig = {
+  source: 'src',
+  loadingType: 'loading="lazy"',
+  class: '',
+}
 
+loadConfig2 = {
+  source: 'data-src',
+  loadingType: '',
+  class: ' lazyload',
+}
 
 const display = {
 
-  loadConf: lazyLoadConfig.onLazyloadCheck(),
-  
+  loadConf: loadConfig2,
 
   async stringToDisplay(dataArray) {
     try {
-      console.log("🚀 ~ loadConf", this.loadConf)
-      if (this.loadConf.isSupport === false) {
-        ref.searchSection.style.backgroundColor = '#d0ebca';
-      }
    const arrayData = await dataArray.data.hits.map(
     ({webformatURL, largeImageURL, tags, likes, views, comments, downloads}) => /* { */
       `<div class="photo-card">
         <a href="${largeImageURL}" class="gallery__item">
-          <img class="${this.loadConf.galleryClass}" 
+          <img class="gallery__image${this.loadConf.class}" 
             ${this.loadConf.source}="${webformatURL}" 
             alt="${tags}" ${this.loadConf.loadingType}
             />
@@ -125,8 +147,60 @@ const display = {
         </div>
       </div>
       `
+
+    //   const cardDiv = document.createElement('div');
+    //   cardDiv.classList.add('photo-card')
+
+    //   const aHref = document.createElement('a');
+    //   aHref.href = largeImageURL;
+    //   aHref.classList.add('gallery__item');
+
+    //   const img = document.createElement('img');
+    //   img.classList.add('gallery__image');
+    //   img.classList.add('lazyload');
+    //   // img.loading = 'lazy';
+    //   // img.src = webformatURL;
+    //   img.setAttribute('data-src', webformatURL);
+    //   img.alt = tags;
+      
+    //   aHref.append(img);
+
+    //   const infoDiv = document.createElement('div');
+    //   infoDiv.classList.add('info');
+
+    //   const pLikes = document.createElement('p');
+    //   pLikes.classList.add('info-item');
+    //   const bLikes = document.createElement('b');
+    //   bLikes.textContent = 'Likes';
+    //   pLikes.append(bLikes, likes);
+
+    //   const pViews = document.createElement('p');
+    //   pViews.classList.add('info-item');
+    //   const bViews = document.createElement('b');
+    //   bViews.textContent = 'Views';
+    //   pViews.append(bViews, views);
+
+    //   const pComments = document.createElement('p');
+    //   pComments.classList.add('info-item');
+    //   const bComments = document.createElement('b');
+    //   bComments.textContent = 'Comments';
+    //   pComments.append(bComments, comments);
+
+    //   const pDownloads = document.createElement('p');
+    //   pDownloads.classList.add('info-item');
+    //   const bDownloads = document.createElement('b');
+    //   bDownloads.textContent = 'Downloads';
+    //   pDownloads.append(bDownloads, downloads);
+
+    //   infoDiv.append(pLikes, pViews, pComments, pDownloads);
+    //   cardDiv.append(aHref, infoDiv);
+    //   return cardDiv;
+    // }
   );
+    // const ttt = await arrayData;
+    // console.log(...ttt);
   const stringData = await arrayData.join('');
+  // const stringData = await arrayData;//append
   return stringData;
    } catch (error) {
     console.log(error.message);
@@ -236,32 +310,3 @@ const sLightBox = {
 
 }
 
-
-
-// =============
-// function lazyLoadConfig() {
-// const a = 1;
-// const b = 1;
-
-//   // if ('loading' in HTMLImageElement.prototype) {
-//     if (a !== b) {
-//     console.log('Браузер поддерживает lazyload');
-//     return {
-//       source: 'src',
-//       loadingType: 'loading="lazy"',
-//       galleryClass: 'gallery__image',
-//     }
-//     // addSrcAttrToLazyImages();
-//   } else {
-//     console.log('Браузер НЕ поддерживает lazyload');
-
-//     import('lazysizes');
-//     ref.searchSection.style.backgroundColor = '#d0ebca';
-
-//     return {
-//       source: 'data-src',
-//       loadingType: '',
-//       galleryClass: 'lazyload gallery__image',
-//     }
-//   }
-// };
