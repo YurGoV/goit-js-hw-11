@@ -1,4 +1,7 @@
 
+// https://dev.to/dcodeyt/create-a-button-with-a-loading-spinner-in-html-css-1c0h
+
+
 // const axios = require('axios');
 const axios = require('axios').default;
 import SimpleLightbox from "simplelightbox";
@@ -35,6 +38,7 @@ const onClick = {
   },
   
   loadMoreButton (event) {
+    loadMoreButtonSpinner.start();////
     findImagesService.setPage();
     findImagesService.find();    
   },
@@ -161,7 +165,16 @@ const display = {
   }
 };
 
-
+const loadMoreButtonSpinner = {
+  start() {
+    ref.loadMoreButton.classList.add('button--loading');
+    ref.loadMoreButton.setAttribute("disabled", "");
+  },
+  stop() {
+    ref.loadMoreButton.classList.remove('button--loading');
+    ref.loadMoreButton.removeAttribute("disabled", "");
+  }
+}
 
 const findImagesService = {
 
@@ -173,8 +186,9 @@ const findImagesService = {
 
   async find () {
     if (this.querryString === '') {
-      display.clearGallery();
+      
       display.loadMoreButtonVisibility(false);
+      display.clearGallery();
       this.previousSearch = '';
       return Notify.failure(`please input what you want to search!`);
     }
@@ -185,6 +199,7 @@ const findImagesService = {
 
     if (this.previousSearch !== '' && this.previousSearch !== this.querryString) {
       this.page = 1;
+      display.loadMoreButtonVisibility(false);
       display.clearGallery();
     }
 
@@ -194,6 +209,7 @@ const findImagesService = {
 
     async function querry() {
       try {
+        // loadMoreButtonSpinner.start();///////
       const querry = await axios.get('https://pixabay.com/api/', {
        params: {
         key:'30695501-7cf0afb8f69a77a083ed747e6',
@@ -214,6 +230,8 @@ const findImagesService = {
 
     this.previousSearch = this.querryString;
     this.prevoiusPage = this.page;
+
+    loadMoreButtonSpinner.stop();
 
   },
 

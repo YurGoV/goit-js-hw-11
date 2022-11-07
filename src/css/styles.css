@@ -15,23 +15,70 @@
 /* } */
 
 
-.search-section {
+/* .search-section {
   background-color: #C5E2FF;
-}
+} */
 
 .load-more-section,
 .search-section {
   display: flex;
   justify-content: center;
+  background-color: #C5E2FF;
 }
 
 .load-more {
   display: none;
 }
 
+.load-more {
+  display: none;
+  position: relative;
+  padding: 8px 16px;
+  background: #d9ecff;
+  ;
+  border: none;
+  outline: none;
+  border-radius: 2px;
+  cursor: pointer;
+
+}
+
+
+
 .load-more,
 .search-form {
   padding: 5px 30px;
   margin-top: 15px;
   margin-bottom: 15px;
+}
+
+.button__text {
+  font: bold 16px 'Quicksand', san-serif;
+  color: #ffffff;
+  transition: all 0.2s;
+}
+
+.button--loading::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  border: 4px solid transparent;
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: button-loading-spinner 1s ease infinite;
+}
+@keyframes button-loading-spinner {
+  from {
+      transform: rotate(0turn);
+  }
+
+  to {
+      transform: rotate(1turn);
+  }
 }
