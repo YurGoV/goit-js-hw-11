@@ -19,11 +19,17 @@
   background-color: #C5E2FF;
 } */
 
+.load-more-section {
+  margin-top: 5px;
+}
+
 .load-more-section,
 .search-section {
   display: flex;
   justify-content: center;
   background-color: #C5E2FF;
+  /* background-color: red; */
+  /* min-height: 40px; */
 }
 
 .load-more {
@@ -40,7 +46,6 @@
   outline: none;
   border-radius: 2px;
   cursor: pointer;
-
 }
 
 

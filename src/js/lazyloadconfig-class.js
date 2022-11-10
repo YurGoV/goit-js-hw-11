@@ -4,27 +4,20 @@ export class LazyLoadConfig {
     this.loadingType = loadingType;
     this.galleryClass = galleryClass;
     this.isSupport = isSupport;
-    // this.a = a;
-    // this.b = b;
   }
 
   onLazyloadCheck() {
       if ('loading' in HTMLImageElement.prototype) {
-        // if (this.a !== this.b) {
-          console.log('Браузер поддерживает lazyload');
+          // console.log('Браузер поддерживает lazyload');
           return {
             source: 'src',
             loadingType: 'loading="lazy"',
             galleryClass: 'gallery__image',
             isSupport: true,
           }
-          // addSrcAttrToLazyImages();
         } else {
-          console.log('Браузер НЕ поддерживает lazyload');
-      
+          // console.log('Браузер НЕ поддерживает lazyload');
           import('lazysizes');
-          // ref.searchSection.style.backgroundColor = '#d0ebca';
-      
           return {
             source: 'data-src',
             loadingType: '',
@@ -34,3 +27,14 @@ export class LazyLoadConfig {
         }
   } 
 };
+
+// має бути встановлена та підключена бібліотека lazysizes:
+// https://www.npmjs.com/package/lazysizes
+
+// import { LazyLoadConfig } from "./lazyloadconfig-class.js";
+// розмітка img:
+//   натівна lazyload:  <img src="" alt="" loading="lazy" />
+//   згідно lazysizes: <img data-src="image.jpg" class="lazyload" />
+//   є підтримка рпспонсивного обчислення розмірів картинки, розібратися
+
+

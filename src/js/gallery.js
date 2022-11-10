@@ -1,6 +1,17 @@
 
 // https://dev.to/dcodeyt/create-a-button-with-a-loading-spinner-in-html-css-1c0h
 
+// + todo: move spinner and disable button to class!
+// + todo: "adaptive" lazyload - write class_doc // refactor code
+// + todo: add card nums on mobile display
+    // https://stackdiary.com/detect-mobile-browser-javascript/
+// todo: add handlebars
+  //https://www.npmjs.com/package/handlebars
+  //https://www.npmjs.com/package/parcel-plugin-handlebars-precompile
+// todo: lazysizes refactor code with handlebars
+
+// todo afterAll - refactore code
+
 
 // const axios = require('axios');
 const axios = require('axios').default;
@@ -9,10 +20,27 @@ import "simplelightbox/dist/simple-lightbox.min.css";
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 import { LazyLoadConfig } from "./lazyloadconfig-class.js";
+import { ButtonSpinner } from "./button-spinner-class.js";
 const lazyLoadConfig = new LazyLoadConfig;
+
 
 const supportsLazyLoad = ('loading' in document.createElement('img'));
 console.log("🚀 ~ supportsLazyLoad", supportsLazyLoad)
+
+
+//// for test
+// const refTestString = document.querySelector('#test_string');
+// console.log(refTestString);
+// refTestString.textContent = 'lalala'
+//// for test
+
+function perPageValue() {
+  if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/iPhone/i)) {
+    return 16;
+  };
+  return 40;
+} 
+
 
 
 Notify.init({
@@ -31,6 +59,10 @@ const ref = {
   searchSection: document.querySelector('.search-section'),
 };
 
+
+
+const loadmoreBtnSpinner = new ButtonSpinner(ref.loadMoreButton);
+
 const onClick = {
   image(event) {
     event.preventDefault();
@@ -38,7 +70,8 @@ const onClick = {
   },
   
   loadMoreButton (event) {
-    loadMoreButtonSpinner.start();////
+    // loadMoreButtonSpinner.start();////
+    loadmoreBtnSpinner.start();
     findImagesService.setPage();
     findImagesService.find();    
   },
@@ -148,7 +181,9 @@ const display = {
 
     window.scrollBy({
     // top: cardHeight * 2,
-    top: ((Math.floor(window.innerHeight / cardHeight) - 1) * cardHeight),
+    // top: ((Math.floor(window.innerHeight / cardHeight) - 1) * cardHeight),// якщо треба автоскрол із одним загальним рядком
+    top: ((Math.floor(window.innerHeight / cardHeight) - 0.8) * cardHeight),    
+    // top: ((Math.floor(window.innerHeight / cardHeight)) * cardHeight),
     behavior: "smooth",
     });  
   },
@@ -165,16 +200,6 @@ const display = {
   }
 };
 
-const loadMoreButtonSpinner = {
-  start() {
-    ref.loadMoreButton.classList.add('button--loading');
-    ref.loadMoreButton.setAttribute("disabled", "");
-  },
-  stop() {
-    ref.loadMoreButton.classList.remove('button--loading');
-    ref.loadMoreButton.removeAttribute("disabled", "");
-  }
-}
 
 const findImagesService = {
 
@@ -182,7 +207,8 @@ const findImagesService = {
   querryString: '',
   previousSearch: '',
   prevoiusPage: NaN,
-  perPage: 40,
+  // perPage: 40,
+  perPage: perPageValue(),
 
   async find () {
     if (this.querryString === '') {
@@ -209,7 +235,6 @@ const findImagesService = {
 
     async function querry() {
       try {
-        // loadMoreButtonSpinner.start();///////
       const querry = await axios.get('https://pixabay.com/api/', {
        params: {
         key:'30695501-7cf0afb8f69a77a083ed747e6',
@@ -231,7 +256,7 @@ const findImagesService = {
     this.previousSearch = this.querryString;
     this.prevoiusPage = this.page;
 
-    loadMoreButtonSpinner.stop();
+    loadmoreBtnSpinner.stop();
 
   },
 
