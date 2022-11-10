@@ -1,17 +1,22 @@
 
 // https://dev.to/dcodeyt/create-a-button-with-a-loading-spinner-in-html-css-1c0h
 
-// + todo: move spinner and disable button to class!
-// + todo: "adaptive" lazyload - write class_doc // refactor code
-// + todo: add card nums on mobile display
-    // https://stackdiary.com/detect-mobile-browser-javascript/
-// todo: add handlebars
   //https://www.npmjs.com/package/handlebars
-  //https://www.npmjs.com/package/parcel-plugin-handlebars-precompile
-// todo: lazysizes refactor code with handlebars
+  //https://www.npmjs.com/package/parcel-plugin-handlebars-precompile // не працює, збиває інші модулі!!!
+  // https://www.npmjs.com/package/parcel-transformer-hbs // parcel-transformer-hbs // встановлено цей (додатково згідно доків змінити .parcelrc)
+  // https://youtu.be/Fh8d14cY9AM?t=56m15s // пояснення щодо шаблону
+
+// має бути встановлена та підключена бібліотека lazysizes:
+// https://www.npmjs.com/package/lazysizes
+
+// import { LazyLoadConfig } from "./lazyloadconfig-class.js";
+// розмітка img:
+//   натівна lazyload:  <img src="" alt="" loading="lazy" />
+//   згідно lazysizes: <img data-src="image.jpg" class="lazyload" />
+//   є підтримка рпспонсивного обчислення розмірів картинки, розібратися
+
 
 // todo afterAll - refactore code
-
 
 // const axios = require('axios');
 const axios = require('axios').default;
@@ -19,14 +24,39 @@ import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
-import { LazyLoadConfig } from "./lazyloadconfig-class.js";
+// import { LazyLoadConfig } from "./lazyloadconfig-class.js";
 import { ButtonSpinner } from "./button-spinner-class.js";
-const lazyLoadConfig = new LazyLoadConfig;
+// const lazyLoadConfig = new LazyLoadConfig;/////
+
+// const templatePath = isLazySupportCardsTemplate().toString();
+// console.log(templatePath);
+
+import cardsTemplateFunc from '../templates/gallery-cards.hbs';
+import lazyCardsTemplateFunc from '../templates/gallery-cards-lazysizes.hbs';
 
 
-const supportsLazyLoad = ('loading' in document.createElement('img'));
-console.log("🚀 ~ supportsLazyLoad", supportsLazyLoad)
 
+function isLazySupportCardsTemplate() {
+  if ('loading' in document.createElement('img')) {//дубль 32-33ї
+    return cardsTemplateFunc;
+  } 
+  return lazyCardsTemplateFunc;
+}
+
+// async function isLazySupportCardsTemplate2() {
+//   if ('loading' in document.createElement('img')) {//дубль 32-33ї
+//     await import(cardsTemplateFunc2).then(path => '../templates/gallery-cards-copy.hbs');
+//     // return await import('../templates/gallery-cards.hbs')
+//     // let cardsTemplateFunc2 = await import('../templates/gallery-cards-copy.hbs');
+//     // console.log(cardsTemplateFunc2);
+//     return cardsTemplateFunc2;
+//   }
+//   return lazyCardsTemplateFunc;
+// }
+// isLazySupportCardsTemplate2().then(res => console.log(res))
+
+
+// let cardsTemplateFunc2 = await import('../templates/gallery-cards.hbs')
 
 //// for test
 // const refTestString = document.querySelector('#test_string');
@@ -40,6 +70,7 @@ function perPageValue() {
   };
   return 40;
 } 
+
 
 
 
@@ -59,9 +90,16 @@ const ref = {
   searchSection: document.querySelector('.search-section'),
 };
 
-
-
 const loadmoreBtnSpinner = new ButtonSpinner(ref.loadMoreButton);
+
+function onLazyloadSupportCheck() {
+  if (!('loading' in document.createElement('img'))) {//дубль 32-33ї
+    Notify.success(`lazysizes library was loaded!`);
+    // ref.searchSection.style.backgroundColor = '#d0ebca';
+    import('lazysizes');
+  } 
+};
+onLazyloadSupportCheck();
 
 const onClick = {
   image(event) {
@@ -98,7 +136,7 @@ async function onGetValidData(dataArray, currentPage, perPage) {
   const totalPages = Math.ceil(totalHits / perPage);
 
   if (totalHits === 0) {
-    return Notify.failure(`Sorry, there are no images matching your search querry. Please try again`);
+    return Notify.failure(`Вибачте, немає зображень за таким запитом, Спробуйте ще`);
   };
 
   // const str = await display.stringToDisplay(dataArray);
@@ -106,7 +144,7 @@ async function onGetValidData(dataArray, currentPage, perPage) {
   ref.gallerySet.insertAdjacentHTML('beforeend', await display.stringToDisplay(dataArray));
 
   if (currentPage === 1) {
-    Notify.success(`Hooray! We found ${totalHits} images.`);
+    Notify.success(`Так! Ми знайшли ${totalHits} зображень.`);
 
       sLightBox.init()
   } else {
@@ -120,55 +158,26 @@ async function onGetValidData(dataArray, currentPage, perPage) {
   display.loadMoreButtonVisibility(false);
 
   if (currentPage !== 1) {
-  Notify.failure("We're sorry, but you've reached the end of search results.");
+  Notify.failure("На жаль, ви дійшли до кінця результату пошуку.");
   }
 };
 
-
-
 const display = {
 
-  loadConf: lazyLoadConfig.onLazyloadCheck(),
+  // loadConf: lazyLoadConfig.onLazyloadCheck(),
   
-
   async stringToDisplay(dataArray) {
     try {
-      console.log("🚀 ~ loadConf", this.loadConf)
-      if (this.loadConf.isSupport === false) {
-        ref.searchSection.style.backgroundColor = '#d0ebca';
-      }
-   const arrayData = await dataArray.data.hits.map(
-    ({webformatURL, largeImageURL, tags, likes, views, comments, downloads}) => /* { */
-      `<div class="photo-card">
-        <a href="${largeImageURL}" class="gallery__item">
-          <img class="${this.loadConf.galleryClass}" 
-            ${this.loadConf.source}="${webformatURL}" 
-            alt="${tags}" ${this.loadConf.loadingType}
-            />
-        </a>
-        <div class="info">
-          <p class="info-item">
-            <b>Likes</b>
-            ${likes}
-          </p>
-          <p class="info-item">
-            <b>Views</b>
-            ${views}
-          </p>
-          <p class="info-item">
-            <b>Comments</b>
-            ${comments}
-          </p>
-          <p class="info-item">
-            <b>Downloads</b>
-            ${downloads}
-          </p>
-        </div>
-      </div>
-      `
-  );
-  const stringData = await arrayData.join('');
-  return stringData;
+      // console.log("🚀 ~ loadConf", this.loadConf)
+      // if (this.loadConf.isSupport === false) {
+      //   ref.searchSection.style.backgroundColor = '#d0ebca';
+      // }
+  
+      // return await dataArray.data.hits.map(await isLazySupportCardsTemplate2());//генеруємо розмітку з шаблона 
+      return await dataArray.data.hits.map(isLazySupportCardsTemplate()).join('');
+  // або:
+  // return await dataArray.data.hits.map(card => isLazySupportCardsTemplate()(card)).join('');//біль "початківський" запис
+
    } catch (error) {
     console.log(error.message);
    }
@@ -216,11 +225,11 @@ const findImagesService = {
       display.loadMoreButtonVisibility(false);
       display.clearGallery();
       this.previousSearch = '';
-      return Notify.failure(`please input what you want to search!`);
+      return Notify.failure(`будь ласка введіть, що ви хочете знайти!`);
     }
 
     if (this.prevoiusPage === this.page && this.previousSearch === this.querryString) {
-      return Notify.success(`To show more click "Load more" downside button or change search querryy please`);
+      return Notify.success(`Щоб побачити більше - тисніть "Завантажити ще" внизу або введіть інший запит`);
     }
 
     if (this.previousSearch !== '' && this.previousSearch !== this.querryString) {
