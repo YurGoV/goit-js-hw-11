@@ -24,3 +24,6 @@ if ('loading' in HTMLImageElement.prototype) {// https://youtu.be/kxwN7eXBNDQ?t=
   console.log('Браузер НЕ поддерживает lazyload');
   // addLazySizesScript();
 }
+або значення перемінної:
+const isLazyLoadNativeSupport = document.createElement('img');
+console.dir(isLazyLoadNativeSupport)

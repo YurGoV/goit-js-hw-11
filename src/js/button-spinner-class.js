@@ -1,21 +1,26 @@
-export class ButtonSpinner {
+export class ButtonSpinnerAndVisibility {
 constructor (buttonRef) {
     this.buttonRef = buttonRef;
 }
-
-    start() {
+    spinnerStart() {
         this.buttonRef.classList.add('button--loading');
         this.buttonRef.setAttribute("disabled", "");
     }
 
-    stop() {
+    spinnerStop() {
         this.buttonRef.classList.remove('button--loading');
         this.buttonRef.removeAttribute("disabled", "");
     }
-  }
 
+    isVisible(isHaveToVisible) {
+        if (isHaveToVisible) {
+            return this.buttonRef.style.display = 'inline-block';
+          };
+        return this.buttonRef.style.display = 'none';
+    }
+};
 
-
+//CSS required:
 /*   css:
   .button {
     position: relative;

@@ -3,22 +3,6 @@
   --animation-duration: 250ms;
 }
 
-
-
-/* .search-form { */
-  /* display: flex; */
-  /* padding-top: 15px;
-  padding-bottom: 30px;
-  margin-left: 25%; */
-  /* margin-left: auto;
-  margin-right: auto; */
-/* } */
-
-
-/* .search-section {
-  background-color: #C5E2FF;
-} */
-
 .load-more-section {
   margin-top: 5px;
 }
@@ -28,24 +12,42 @@
   display: flex;
   justify-content: center;
   background-color: #C5E2FF;
-  /* background-color: red; */
-  /* min-height: 40px; */
 }
 
 .load-more {
   display: none;
+}
+
+button {
+  background: #aed3f8;
+  border: none;
+  outline: none;
+  border-radius: 2px;
+  cursor: pointer;
+
+  font: bold 15px 'Quicksand', san-serif;
+  color: #ffffff;
+  transition: all 0.2s;
+}
+
+input {
+  border: none;
+  outline: none;
+  border-radius: 2px;
+  background: #dcebff;
+  color: #3081cc;
+}
+
+::placeholder {
+  color: #fafafa;
+  opacity: 1;
+  font: 15px 'Quicksand', san-serif;
 }
 
 .load-more {
   display: none;
   position: relative;
   padding: 8px 16px;
-  background: #d9ecff;
-  ;
-  border: none;
-  outline: none;
-  border-radius: 2px;
-  cursor: pointer;
 }
 
 
@@ -57,11 +59,6 @@
   margin-bottom: 15px;
 }
 
-.button__text {
-  font: bold 16px 'Quicksand', san-serif;
-  color: #ffffff;
-  transition: all 0.2s;
-}
 
 .button--loading::after {
   content: "";
