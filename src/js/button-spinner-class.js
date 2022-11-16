@@ -1,6 +1,7 @@
 export class ButtonSpinnerAndVisibility {
 constructor (buttonRef) {
     this.buttonRef = buttonRef;
+    this.visibility = NaN;
 }
     spinnerStart() {
         this.buttonRef.classList.add('button--loading');
@@ -13,10 +14,19 @@ constructor (buttonRef) {
     }
 
     isVisible(isHaveToVisible) {
-        if (isHaveToVisible) {
-            return this.buttonRef.style.display = 'inline-block';
-          };
-        return this.buttonRef.style.display = 'none';
+        if (isHaveToVisible === 'show') {
+           this.buttonRef.style.display = 'inline-block';
+          this.visibility = 'visible';
+            return this.visibility;
+          }
+      if (isHaveToVisible === 'hide') {
+        this.buttonRef.style.display = 'none';
+        this.visibility = 'hidden';
+        return this.visibility;
+      }
+      if (isHaveToVisible === 'status') {
+        return this.visibility;
+      }
     }
 };
 

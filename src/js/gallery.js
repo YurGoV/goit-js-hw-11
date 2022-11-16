@@ -37,7 +37,7 @@ function onLazyloadSupportCheck() {
   if (!isLazyLoadNativeSupport) {
     Notify.success(`lazysizes library was loaded!`);
     import('lazysizes');
-  } 
+  }
 };
 
 onLazyloadSupportCheck();
@@ -64,18 +64,18 @@ const loadmoreBtn = new ButtonSpinnerAndVisibility(ref.loadMoreButton);
  function onImageClick(event) {
     event.preventDefault();
   };
-  
+
   function onLoadMoreButtonClick (event) {
     loadmoreBtn.spinnerStart();
     findImagesService.setPage();
-    findImagesService.find();    
+    findImagesService.find();
   };
 
   async function onSearchButtonClick(event) {
     event.preventDefault();
 
     const querryString = await event.currentTarget.elements.searchQuery.value;
-  
+
     findImagesService.querryString = querryString;
     await findImagesService.find();
   };
@@ -90,17 +90,21 @@ const findImagesService = {
 
   async find () {
     if (this.querryString === '') {
-      loadmoreBtn.isVisible(false);
+      loadmoreBtn.isVisible('hide');
       clearGallery();
       this.previousSearch = '';
       return Notify.failure(`будь ласка введіть, що ви хочете знайти!`);
     }
     if (this.prevoiusPage === this.page && this.previousSearch === this.querryString) {
+      console.log(loadmoreBtn.isVisible('status'));
+      if (loadmoreBtn.isVisible('status').toString() === 'hidden') {
+        return Notify.success(`Щоб побачити більше - введіть інший запит`);
+      }
       return Notify.success(`Щоб побачити більше - тисніть "Завантажити ще" внизу або введіть інший запит`);
     }
     if (this.previousSearch !== '' && this.previousSearch !== this.querryString) {
       this.page = 1;
-      loadmoreBtn.isVisible(false);
+      loadmoreBtn.isVisible('hide');
       clearGallery();
     }
 
@@ -158,9 +162,9 @@ async function onGetValidData(dataArray, currentPage, perPage) {
   }
 
   if ( totalPages !== currentPage) {
-    return loadmoreBtn.isVisible(true);
-    } 
-  loadmoreBtn.isVisible(false);
+    return loadmoreBtn.isVisible('show');
+    }
+  loadmoreBtn.isVisible('hide');
 
   if (currentPage !== 1) {
   Notify.failure("На жаль, ви дійшли до кінця результату пошуку.");
@@ -184,7 +188,7 @@ function smoothScroll() {
   window.scrollBy({
     top: ((Math.floor(window.innerHeight / cardHeight) - 0.8) * cardHeight),// top: ((Math.floor(window.innerHeight / cardHeight)) * cardHeight),
     behavior: "smooth",
-  });  
+  });
 };
 
 function clearGallery() {
@@ -194,7 +198,7 @@ function clearGallery() {
 function isLazySupportCardsTemplate() {
   if (isLazyLoadNativeSupport) {
     return cardsTemplateFunc;
-  } 
+  }
   return lazyCardsTemplateFunc;
 }
 // DISPLAY FUNCTIONS END
