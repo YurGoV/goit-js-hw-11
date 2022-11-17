@@ -3,9 +3,9 @@ import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { ButtonSpinnerAndVisibility } from "./button-spinner-class.js";
-import cardsTemplateFunc from '../templates/gallery-cards.hbs';
-import lazyCardsTemplateFunc from '../templates/gallery-cards-lazysizes.hbs';
 import { notifyParams } from './notify-responsive-config.js';
+import eachCardsTemplateFunc from '../templates/gallery-cards-each.hbs';
+import eachLazyCardsTemplateFunc from '../templates/gallery-cards-lazysizes-each.hbs';
 
 const ref = {
   searchButton: document.querySelector('.search-form'),
@@ -174,11 +174,12 @@ async function onGetValidData(dataArray, currentPage, perPage) {
 // DISPLAY FUNCTIONS START
 async function stringToDisplay(dataArray) {
   try {
-    return await dataArray.data.hits.map(isLazySupportCardsTemplate()).join('');
+    return await isLazySupportCardsTemplate(dataArray.data.hits);// return await dataArray.data.hits.map(isLazySupportCardsTemplate()).join('');
  } catch (error) {
   console.log(error.message);
  }
 };
+
 
 function smoothScroll() {
   const { height: cardHeight } = document
@@ -186,7 +187,7 @@ function smoothScroll() {
   .firstElementChild.getBoundingClientRect();
 
   window.scrollBy({
-    top: ((Math.floor(window.innerHeight / cardHeight) - 0.8) * cardHeight),// top: ((Math.floor(window.innerHeight / cardHeight)) * cardHeight),
+    top: ((Math.floor(window.innerHeight - (0.5 * cardHeight)))),// top: ((Math.floor(window.innerHeight / cardHeight) - 0.25) * cardHeight),// top: ((Math.floor(window.innerHeight / cardHeight)) * cardHeight),
     behavior: "smooth",
   });
 };
@@ -195,10 +196,10 @@ function clearGallery() {
   return ref.gallerySet.innerHTML = '';
 };
 
-function isLazySupportCardsTemplate() {
+function isLazySupportCardsTemplate(arr) {
   if (isLazyLoadNativeSupport) {
-    return cardsTemplateFunc;
+    return eachCardsTemplateFunc(arr);
   }
-  return lazyCardsTemplateFunc;
+  return eachLazyCardsTemplateFunc(arr);
 }
 // DISPLAY FUNCTIONS END

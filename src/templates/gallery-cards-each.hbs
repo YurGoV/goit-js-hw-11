@@ -1,8 +1,9 @@
+{{#each []}}
 <div class="photo-card">
     <a href="{{largeImageURL}}" class="gallery__item">
-        <img class="lazyload gallery__image" 
-            data-src="{{webformatURL}}"
-            alt="{{tags}}"
+        <img class="gallery__image"
+            src="{{webformatURL}}"
+            alt="{{tags}}" loading="lazy"
         />
     </a>
     <div class="info">
@@ -24,3 +25,4 @@
         </p>
     </div>
 </div>
+{{/each}}
