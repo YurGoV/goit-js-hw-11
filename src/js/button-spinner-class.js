@@ -15,7 +15,7 @@ constructor (buttonRef) {
 
     isVisible(isHaveToVisible) {
         if (isHaveToVisible === 'show') {
-           this.buttonRef.style.display = 'inline-block';
+           this.buttonRef.style.display = 'inline-block';//todo: without DOM repaint
           this.visibility = 'visible';
             return this.visibility;
           }

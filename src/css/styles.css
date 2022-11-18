@@ -3,6 +3,12 @@
   --animation-duration: 250ms;
 }
 
+/*Jumping Scrollbar Issue fixed*/
+html {
+  overflow-x: hidden;
+  margin-right: calc(-1 * (100vw - 100%));
+}
+
 .load-more-section {
   margin-top: 5px;
 }
@@ -12,6 +18,9 @@
   display: flex;
   justify-content: center;
   background-color: #C5E2FF;
+  max-width: 1140px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .load-more {

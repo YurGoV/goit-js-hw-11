@@ -27,3 +27,6 @@ console.log('Браузер поддерживает lazyload');
 } else {
 console.log('Браузер НЕ поддерживает lazyload');
 }
+
+https://km.kkrach.de/p_jumping_scrollbar_issue/
+Jumping Scrollbar Issue
