@@ -17,13 +17,11 @@ export class ButtonSpinnerAndVisibility {
 
   isVisible(isHaveToVisible) {
     if (isHaveToVisible === 'show') {
-      // this.buttonRef.style.display = 'inline-block';//todo: without DOM repaint
       this.sectionRef.classList.remove('invisible');
       this.visibility = 'visible';
       return this.visibility;
     }
     if (isHaveToVisible === 'hide') {
-      // this.buttonRef.style.display = 'none';
       this.sectionRef.classList.add('invisible');
       this.visibility = 'hidden';
       return this.visibility;

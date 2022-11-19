@@ -66,7 +66,6 @@ function onImageClick(event) {
 };
 
 function onLoadMoreButtonClick (event) {
-  // isVisiblespinnerStart();//todo: незадіяна функція??
   loadmoreBtn.spinnerStart();
   findImagesService.setPage();
   findImagesService.find();
