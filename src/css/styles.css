@@ -13,6 +13,12 @@ html {
   margin-top: 5px;
 }
 
+/*for loadmore button*/
+.invisible {
+  opacity: 0;
+  pointer-events: none;
+}
+
 .load-more-section,
 .search-section {
   display: flex;
@@ -24,17 +30,13 @@ html {
   margin-right: auto;
 }
 
-.load-more {
-  display: none;
-}
-
 button {
   background: #aed3f8;
   border: none;
   outline: none;
   border-radius: 2px;
   cursor: pointer;
-
+  display: inline-block;
   font: bold 15px 'Quicksand', san-serif;
   color: #ffffff;
   transition: all 0.2s;
@@ -55,7 +57,6 @@ input {
 }
 
 .load-more {
-  display: none;
   position: relative;
   padding: 8px 16px;
 }
@@ -68,7 +69,6 @@ input {
   margin-top: 15px;
   margin-bottom: 15px;
 }
-
 
 .button--loading::after {
   content: "";

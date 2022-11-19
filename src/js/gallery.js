@@ -11,7 +11,7 @@ const ref = {
   searchButton: document.querySelector('.search-form'),
   gallerySet: document.querySelector('.gallery'),
   loadMoreButton: document.querySelector('button.load-more'),
-  searchSection: document.querySelector('.search-section'),
+  loadMoreSection: document.querySelector('.load-more-section'),
 };
 
 const on = {
@@ -57,28 +57,29 @@ const simplLightBox = {
   }
 };
 
-const loadmoreBtn = new ButtonSpinnerAndVisibility(ref.loadMoreButton);
+const loadmoreBtn = new ButtonSpinnerAndVisibility(ref.loadMoreButton, ref.loadMoreSection);
 // CHECK AND SETUP SECTION END
 
 // ON CLICK FUNCTIONS START
- function onImageClick(event) {
-    event.preventDefault();
-  };
+function onImageClick(event) {
+  event.preventDefault();
+};
 
-  function onLoadMoreButtonClick (event) {
-    loadmoreBtn.spinnerStart();
-    findImagesService.setPage();
-    findImagesService.find();
-  };
+function onLoadMoreButtonClick (event) {
+  // isVisiblespinnerStart();//todo: незадіяна функція??
+  loadmoreBtn.spinnerStart();
+  findImagesService.setPage();
+  findImagesService.find();
+};
 
-  async function onSearchButtonClick(event) {
-    event.preventDefault();
+async function onSearchButtonClick(event) {
+  event.preventDefault();
 
-    const querryString = await event.currentTarget.elements.searchQuery.value;
+  const querryString = await event.currentTarget.elements.searchQuery.value;
 
-    findImagesService.querryString = querryString;
-    await findImagesService.find();
-  };
+  findImagesService.querryString = querryString;
+  await findImagesService.find();
+};
 // ON CLICK FUNCTIONS END
 
 const findImagesService = {

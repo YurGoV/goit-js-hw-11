@@ -1,33 +1,37 @@
 export class ButtonSpinnerAndVisibility {
-constructor (buttonRef) {
+  constructor(buttonRef, sectionRef) {
+    this.sectionRef = sectionRef;
     this.buttonRef = buttonRef;
     this.visibility = NaN;
-}
-    spinnerStart() {
-        this.buttonRef.classList.add('button--loading');
-        this.buttonRef.setAttribute("disabled", "");
-    }
+  }
 
-    spinnerStop() {
-        this.buttonRef.classList.remove('button--loading');
-        this.buttonRef.removeAttribute("disabled", "");
-    }
+  spinnerStart() {
+    this.buttonRef.classList.add('button--loading');
+    this.buttonRef.setAttribute('disabled', '');
+  }
 
-    isVisible(isHaveToVisible) {
-        if (isHaveToVisible === 'show') {
-           this.buttonRef.style.display = 'inline-block';//todo: without DOM repaint
-          this.visibility = 'visible';
-            return this.visibility;
-          }
-      if (isHaveToVisible === 'hide') {
-        this.buttonRef.style.display = 'none';
-        this.visibility = 'hidden';
-        return this.visibility;
-      }
-      if (isHaveToVisible === 'status') {
-        return this.visibility;
-      }
+  spinnerStop() {
+    this.buttonRef.classList.remove('button--loading');
+    this.buttonRef.removeAttribute('disabled', '');
+  }
+
+  isVisible(isHaveToVisible) {
+    if (isHaveToVisible === 'show') {
+      // this.buttonRef.style.display = 'inline-block';//todo: without DOM repaint
+      this.sectionRef.classList.remove('invisible');
+      this.visibility = 'visible';
+      return this.visibility;
     }
+    if (isHaveToVisible === 'hide') {
+      // this.buttonRef.style.display = 'none';
+      this.sectionRef.classList.add('invisible');
+      this.visibility = 'hidden';
+      return this.visibility;
+    }
+    if (isHaveToVisible === 'status') {
+      return this.visibility;
+    }
+  }
 };
 
 //CSS required:
