@@ -4,8 +4,7 @@ import "simplelightbox/dist/simple-lightbox.min.css";
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { ButtonSpinnerAndVisibility } from "./button-spinner-class.js";
 import { notifyParams } from './notify-responsive-config.js';
-import eachCardsTemplateFunc from '../templates/gallery-cards-each.hbs';
-import eachLazyCardsTemplateFunc from '../templates/gallery-cards-lazysizes-each.hbs';
+import cardsTemplateFunc from '../templates/gallery-cards-each.hbs';
 
 const ref = {
   searchButton: document.querySelector('.search-form'),
@@ -21,10 +20,11 @@ const on = {
 };
 
 // CHECK AND SETUP SECTION START
+// todo: all lazyload in one class???
 const isLazyLoadNativeSupport = 'loading' in document.createElement('img');//чи підтримує браузер lazyload
 
-const nofifyConfig = notifyParams.setParams();
-Notify.init(nofifyConfig);
+const notifyConfig = notifyParams.setParams();
+Notify.init(notifyConfig);
 
 function perPageValue() {
   if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/iPhone/i)) {
@@ -62,6 +62,9 @@ const loadmoreBtn = new ButtonSpinnerAndVisibility(ref.loadMoreButton, ref.loadM
 
 // ON CLICK FUNCTIONS START
 function onImageClick(event) {
+  if (event.target.nodeName === 'IMG') {
+    return;
+  };
   event.preventDefault();
 };
 
@@ -96,7 +99,6 @@ const findImagesService = {
       return Notify.failure(`будь ласка введіть, що ви хочете знайти!`);
     }
     if (this.prevoiusPage === this.page && this.previousSearch === this.querryString) {
-      console.log(loadmoreBtn.isVisible('status'));
       if (loadmoreBtn.isVisible('status').toString() === 'hidden') {
         return Notify.success(`Щоб побачити більше - введіть інший запит`);
       }
@@ -197,9 +199,6 @@ function clearGallery() {
 };
 
 function isLazySupportCardsTemplate(arr) {
-  if (isLazyLoadNativeSupport) {
-    return eachCardsTemplateFunc(arr);
-  }
-  return eachLazyCardsTemplateFunc(arr);
+  return cardsTemplateFunc([arr, isLazyLoadNativeSupport]);
 }
 // DISPLAY FUNCTIONS END
