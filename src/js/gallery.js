@@ -15,7 +15,6 @@ const ref = {
 
 const on = {
   searchButton: ref.searchButton.addEventListener('submit', onSearchButtonClick),
-  image: ref.gallerySet.addEventListener('click', onImageClick),
   loadMoreButton: ref.loadMoreButton.addEventListener('click', onLoadMoreButtonClick),
 };
 
@@ -57,17 +56,9 @@ const simplLightBox = {
   }
 };
 
-const loadmoreBtn = new ButtonSpinnerAndVisibility(ref.loadMoreButton, ref.loadMoreSection);
+const loadmoreBtn = new ButtonSpinnerAndVisibility(ref.loadMoreButton, ref.loadMoreSection);// todo: promiceAll (delay on 300ms)
+
 // CHECK AND SETUP SECTION END
-
-// ON CLICK FUNCTIONS START
-function onImageClick(event) {
-  if (event.target.nodeName === 'IMG') {
-    return;
-  };
-  event.preventDefault();
-};
-
 function onLoadMoreButtonClick (event) {
   loadmoreBtn.spinnerStart();
   findImagesService.setPage();
@@ -164,6 +155,7 @@ async function onGetValidData(dataArray, currentPage, perPage) {
   }
 
   if ( totalPages !== currentPage) {
+    console.log('showw');
     return loadmoreBtn.isVisible('show');
     }
   loadmoreBtn.isVisible('hide');

@@ -9,7 +9,6 @@ export const notifyParams = {
   setParams() {
     if (window.innerWidth >= 1100) {
         return {
-        // position: 'center-top',
         position: 'right-top',
         fontSize: '18px',
         width: '400px',
@@ -20,8 +19,7 @@ export const notifyParams = {
       }
       if (window.innerWidth <= 810) {
         return {
-        // position: 'center-top',
-        position: 'right-top',
+        position: 'left-top',
         fontSize: '12px',
         width: '200px',
         distance: '10px',
@@ -32,7 +30,6 @@ export const notifyParams = {
     return {
     position: 'right-top',
     fontSize: '14px',
-    position: 'right-top',
     width: '280px',
     distance: '10px',
     opacity: 0.7,
